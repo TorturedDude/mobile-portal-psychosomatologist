@@ -4,11 +4,12 @@ export interface IUserEdit{
 }
 
 export interface IUser{
-    id: number,
+    id?: number,
     firstName: string,
     lastName: string,
     email: string,
     username: string,
+    role?: string,
 }
 
 export interface IUserCreate extends IUser{

@@ -5,11 +5,24 @@ import { useEffect, useState } from "react";
 import { IUser } from "../types/types";
 import { api, parse } from "../api/api";
 import { Colors, Gaps, Radius } from "../shared/tokens";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+    Auth: undefined;
+    Profile: undefined;
+    Admin: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export function Profile() {
-    const { logout } = useAuth();
+    const navigation = useNavigation<NavigationProp>();
+    const { logout, isAuthenticated } = useAuth();
     const [user, setUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState(true);
+
+    console.log("isAuthenticated:", isAuthenticated);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -26,6 +39,18 @@ export function Profile() {
         loadUser();
     }, []);
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Auth' }],
+            });
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
+
     if (loading) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -39,7 +64,7 @@ export function Profile() {
             {user ? (
                 <View style={styles.content}>
                     <Image
-                        source={require("../../assets/avatar.png")} // или URI: { uri: user.avatarUrl }
+                        source={require("../../assets/avatar.png")}
                         style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 20 }}
                     />
                     <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 8 }}>
@@ -50,7 +75,12 @@ export function Profile() {
             ) : (
                 <Text>Не удалось загрузить данные пользователя.</Text>
             )}
-            <Button text="Выйти" onPress={logout} />
+            {user?.role === "ROLE_ADMIN" ? (
+                <Button text="Войти в админ панель" onPress={() => navigation.navigate("Admin")} />
+            ) : (
+                <Button text="Поменять пароль" />
+            )}
+            <Button text="Выйти" onPress={handleLogout} />
         </View>
     );
 }
@@ -60,6 +90,7 @@ const styles = StyleSheet.create({
         flex: 2,
         backgroundColor: Colors.white,
         padding: 55,
+        gap: 7,
         justifyContent: 'center',
     },
     content: {

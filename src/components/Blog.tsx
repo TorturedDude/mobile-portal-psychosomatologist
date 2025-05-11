@@ -12,8 +12,8 @@ export function Blog() {
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const response = api.get("api/posts");
-        const posts = JSON.parse(JSON.stringify((await response).data))
+        const response = await api.get("api/posts");
+        const posts = JSON.parse(JSON.stringify(response.data))
 
         setPosts(posts)
       } catch (error) {

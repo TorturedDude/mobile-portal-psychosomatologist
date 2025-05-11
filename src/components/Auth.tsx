@@ -53,7 +53,7 @@ export function Auth() {
                     <Input defaultValue={username} onChangeText={usernamelValue => setUsername(usernamelValue)} placeholder='Email' isPassword={false} />
                     <Input defaultValue={password} onChangeText={passwordValue => setPassword(passwordValue)} placeholder='Password' isPassword={true} />
                     <Button onPress={login} text={'Войти'} />
-                    <Button text={'Восстановить пароль'} />
+                    <Button onPress={() => navigation.navigate("Register")} text={'Зарегестрироваться'} />
                 </View>
             </View>
         </View>

@@ -1,44 +1,31 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AuthScreen } from './src/screens/AuthScreen';
 import { ChatScreen } from './src/screens/ChatScreen';
 import { BlogScreen } from './src/screens/BlogScreen';
 import { CoursesScreen } from './src/screens/CoursesScreen';
 import { SessionScreen } from './src/screens/SessionScreen';
-import { ProfileScreen } from './src/screens/ProfileScreen';
+import { Profile } from './src/components/Profile';
 import { CourseDetailsScreen } from './src/components/CoursesDetails';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BlogPostDetailsScreen } from './src/components/BlogPostDetails';
-import { AuthProvider } from './src/hooks/useAuth';
+import { AuthProvider, useAuth } from './src/hooks/useAuth';
+import AdminScreen from './src/screens/AdminScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 
 const CourseStack = createNativeStackNavigator();
 const BlogStack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator({
-  screenOptions: {
-    headerShown: false,
-  },
-  screens: {
-    Auth: AuthScreen,
-    Chat: ChatScreen,
-    Blog: BlogScreen,
-    Courses: CoursesScreen,
-    Session: SessionScreen,
-    Profile: ProfileScreen,
-    CourseDetails: CourseDetailsScreen,
-  }
-});
+const AdminStack = createNativeStackNavigator();
+
+const Tab = createBottomTabNavigator();
 
 function CourseStackNavigator() {
   return (
     <CourseStack.Navigator>
       <CourseStack.Screen name="Courses" component={CoursesScreen} options={{ headerShown: false }} />
-      <CourseStack.Screen
-        name="CourseDetails"
-        component={CourseDetailsScreen}
-        options={{ headerShown: false }}
-      />
+      <CourseStack.Screen name="CourseDetails" component={CourseDetailsScreen} options={{ headerShown: false }} />
     </CourseStack.Navigator>
   );
 }
@@ -47,13 +34,22 @@ function BlogStackNavigator() {
   return (
     <BlogStack.Navigator>
       <BlogStack.Screen name="Blog" component={BlogScreen} options={{ headerShown: false }} />
-      <BlogStack.Screen
-        name="BlogPostDetails"
-        component={BlogPostDetailsScreen}
-        options={{ headerShown: false }}
-      />
+      <BlogStack.Screen name="BlogPostDetails" component={BlogPostDetailsScreen} options={{ headerShown: false }} />
     </BlogStack.Navigator>
-  )
+  );
+}
+
+function ProfileStackNavigator() {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <AdminStack.Navigator initialRouteName={isAuthenticated ? "Profile" : "Auth"}>
+      <AdminStack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }} />
+      <AdminStack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <AdminStack.Screen name="Admin" component={AdminScreen} options={{ headerShown: false }} />
+      <AdminStack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false}} />
+    </AdminStack.Navigator>
+  );
 }
 
 export default function App() {
@@ -66,7 +62,6 @@ export default function App() {
             tabBarShowLabel: false,
             tabBarIcon: ({ focused, color, size }) => {
               let iconName: string = '';
-
               switch (route.name) {
                 case 'Blog':
                   iconName = focused ? 'square' : 'square-outline';
@@ -75,7 +70,7 @@ export default function App() {
                   iconName = focused ? 'book' : 'book-outline';
                   break;
                 case 'Session':
-                  iconName = focused ? 'laptop' : 'laptop-outline'; // или custom SVG
+                  iconName = focused ? 'laptop' : 'laptop-outline';
                   break;
                 case 'Chat':
                   iconName = focused ? 'chatbubble' : 'chatbubble-outline';
@@ -84,7 +79,6 @@ export default function App() {
                   iconName = focused ? 'person' : 'person-outline';
                   break;
               }
-
               return <Ionicons name={iconName} size={24} color={focused ? 'black' : 'gray'} />;
             },
             tabBarStyle: {
@@ -100,9 +94,9 @@ export default function App() {
           <Tab.Screen name="Courses" component={CourseStackNavigator} />
           <Tab.Screen name="Session" component={SessionScreen} />
           <Tab.Screen name="Chat" component={ChatScreen} />
-          <Tab.Screen name="Profile" component={AuthScreen} />
+          <Tab.Screen name="Profile" component={ProfileStackNavigator} />
         </Tab.Navigator>
       </NavigationContainer>
     </AuthProvider>
-  )
+  );
 }
