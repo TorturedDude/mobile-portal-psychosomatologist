@@ -1,54 +1,59 @@
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
-
-const courses = [
-  {
-    id: '1',
-    title: 'Курс по управлению стрессом',
-    date: '10 апреля 2024',
-    price: '2 490 ₽',
-    image: require('../../assets/posts/stress.jpg'),
-  },
-  {
-    id: '2',
-    title: 'Эмоциональный интеллект',
-    date: '15 апреля 2024',
-    price: '1 990 ₽',
-    image: require('../../assets/posts/stress.jpg'),
-  },
-  {
-    id: '3',
-    title: 'Психосоматика в практике',
-    date: '20 апреля 2024',
-    price: '3 490 ₽',
-    image: require('../../assets/posts/stress.jpg'),
-  },
-];
+import { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { api, parse } from '../api/api';
+import { ICourse } from '../types/types';
 
 export function Courses() {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCourses = async () => {
+      try {
+        const response = await api.get("/api/course");
+        const courses = JSON.parse(JSON.stringify(response.data))
+
+        console.log(courses)
+
+        setCourses(courses); 
+      } catch (error) {
+        console.error('Error loading courses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadCourses();
+  }, []);
+
+  if (loading) {
+          return (
+              <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <ActivityIndicator size="large" />
+              </View>
+          );
+      }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Курсы</Text>
-
       <FlatList
         data={courses}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Image source={item.image} style={styles.image} />
+            <Image
+              source={ require('../../assets/posts/stress.jpg')}
+              style={styles.image}
+            />
             <View style={styles.textContent}>
               <Text style={styles.courseTitle}>{item.title}</Text>
-              <Text style={styles.date}>{item.date}</Text>
-              <Text style={styles.price}>{item.price}</Text>
+              <Text style={styles.date}>{item.startDate || 'Дата не указана'}</Text>
+              <Text style={styles.price}>{item.price} ₽</Text>
               <TouchableOpacity onPress={() =>
                 navigation.navigate('CourseDetails', {
-                    title: item.title,
-                    description: 'Курс помогает познакомиться со связью между телом и психикой...',
-                    price: item.price,
-                    duration: '4 недели',
-                    image: item.image,
+                  id: item.id
                 })
               }>
                 <Text style={styles.readMore}>Подробнее →</Text>

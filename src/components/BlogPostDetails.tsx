@@ -3,13 +3,13 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { Button } from "../shared/button/button";
 import { Colors, Fonts, Radius } from "../shared/tokens";
+import { IPost } from "../types/types";
+import { useEffect, useState } from "react";
+import { api } from "../api/api";
 
 type RootStackParamList = {
     BlogPostDetails: {
-        title: string;
-        description: string;
-        date: string;
-        image: any;
+        id: number
     };
 };
 
@@ -19,7 +19,26 @@ type BlogPostDetailsScreenProps = {
 }
 
 export function BlogPostDetailsScreen({ route }: BlogPostDetailsScreenProps) {
-    const { title, description, date, image } = route.params;
+    const [loading, setLoading] = useState<boolean>(true);
+    const [post, setPost] = useState<IPost>();
+    const { id } = route.params;
+
+    useEffect(() => {
+        const loadPost = async () => {
+            try {
+                const response = api.get(`api/posts/${id}`)
+                const post = JSON.parse(JSON.stringify((await response).data))
+
+                setPost(post)
+            } catch (error) {
+                console.error('Error loading post with id = ', id, error)
+            } finally {
+                setLoading(false)
+            }
+        };
+
+        loadPost();
+    }, [])
 
     return (
         <View style={styles.container}>
