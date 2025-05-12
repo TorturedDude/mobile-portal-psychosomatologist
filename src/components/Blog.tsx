@@ -46,7 +46,7 @@ export function Blog() {
             <Image source={require('../../assets/posts/stress.jpg')} style={styles.image} />
             <View style={styles.textContent}>
               <Text style={styles.postTitle}>{item.title}</Text>
-              <Text style={styles.date}>{item.publishDate.toDateString()}</Text>
+              <Text style={styles.date}>{item?.publishDate.toString()}</Text>
               <TouchableOpacity onPress={() => navigation.navigate('BlogPostDetails', {
                 id: item.id
               })}>

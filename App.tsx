@@ -14,6 +14,12 @@ import { BlogPostDetailsScreen } from './src/components/BlogPostDetails';
 import { AuthProvider, useAuth } from './src/hooks/useAuth';
 import AdminScreen from './src/screens/AdminScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
+import { RedactCourse } from './src/components/RedactCourse';
+import CreateCourse from './src/components/CreateCourse';
+import RedactPost from './src/components/RedactPost';
+import CreatePost from './src/components/CreatePost';
+import CreateReview from './src/components/CreateReview';
+import Reviews from './src/components/Reviews';
 
 const CourseStack = createNativeStackNavigator();
 const BlogStack = createNativeStackNavigator();
@@ -35,6 +41,8 @@ function BlogStackNavigator() {
     <BlogStack.Navigator>
       <BlogStack.Screen name="Blog" component={BlogScreen} options={{ headerShown: false }} />
       <BlogStack.Screen name="BlogPostDetails" component={BlogPostDetailsScreen} options={{ headerShown: false }} />
+      <BlogStack.Screen name="CreateReview" component={CreateReview} options={{ headerShown: false }} />
+      <BlogStack.Screen name="Reviews" component={Reviews} options={{ headerShown: false }} />
     </BlogStack.Navigator>
   );
 }
@@ -48,6 +56,10 @@ function ProfileStackNavigator() {
       <AdminStack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
       <AdminStack.Screen name="Admin" component={AdminScreen} options={{ headerShown: false }} />
       <AdminStack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false}} />
+      <AdminStack.Screen name="RedactCourse" component={RedactCourse} options={{ headerShown: false}} />
+      <AdminStack.Screen name="CreateCourse" component={CreateCourse} options={{ headerShown: false}} />
+      <AdminStack.Screen name="RedactPost" component={RedactPost} options={{ headerShown: false}} />
+      <AdminStack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: false}} />
     </AdminStack.Navigator>
   );
 }

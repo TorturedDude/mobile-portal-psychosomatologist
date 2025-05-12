@@ -40,6 +40,10 @@ export function CourseDetailsScreen({ route }: CourseDetailsScreenProps) {
         loadCourse();
     }, [])
 
+    const handleBuyButton = () => {
+        alert("Вам на почту придет письмо с url на оплату!")
+    }
+
     return (
         <View style={styles.container}>
             {course ? (
@@ -50,8 +54,7 @@ export function CourseDetailsScreen({ route }: CourseDetailsScreenProps) {
                 <Text style={styles.price}>Стоимость: {course.price}</Text>
                 <Text style={styles.duration}>{course.duration}</Text>
                 <View style={styles.buttonContainer}>
-                    <Button text="Купить курс" />
-                    <Button text="Добавить в корзину" />
+                    <Button text="Купить курс" onPress={handleBuyButton}/>
                 </View>
             </View>
             ) : (
