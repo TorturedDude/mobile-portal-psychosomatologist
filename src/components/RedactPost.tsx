@@ -9,8 +9,8 @@ const RedactPost = () => {
     
         return (
             <View style={styles.container}>
-                <Text style={styles.title}>Экран редактирования курсов</Text>
-                <Button text="Создать курс" onPress={() => navigation.navigate("CreatePost")}/>
+                <Text style={styles.title}>Экран редактирования постов</Text>
+                <Button text="Создать пост" onPress={() => navigation.navigate("CreatePost")}/>
             </View>
         );
 };
