@@ -23,6 +23,15 @@ export function CourseDetailsScreen({ route }: CourseDetailsScreenProps) {
     const [course, setCourse] = useState<ICourse>();
     const { id } = route.params;
 
+    const handleBuy = async () => {
+        try {
+            const response = await api.post("/api/payments/send")
+            alert("Вам на почту придет письмо с url на оплату!")
+        } catch(error) {
+            console.error(error)
+        }
+    }
+
     useEffect(() => {
         const loadCourse = async () => {
             try {
@@ -40,10 +49,6 @@ export function CourseDetailsScreen({ route }: CourseDetailsScreenProps) {
         loadCourse();
     }, [])
 
-    const handleBuyButton = () => {
-        alert("Вам на почту придет письмо с url на оплату!")
-    }
-
     return (
         <View style={styles.container}>
             {course ? (
@@ -54,7 +59,7 @@ export function CourseDetailsScreen({ route }: CourseDetailsScreenProps) {
                 <Text style={styles.price}>Стоимость: {course.price}</Text>
                 <Text style={styles.duration}>{course.duration}</Text>
                 <View style={styles.buttonContainer}>
-                    <Button text="Купить курс" onPress={handleBuyButton}/>
+                    <Button text="Купить курс" onPress={handleBuy}/>
                 </View>
             </View>
             ) : (
