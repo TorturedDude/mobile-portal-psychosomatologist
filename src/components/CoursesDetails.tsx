@@ -23,13 +23,9 @@ export function CourseDetailsScreen({ route }: CourseDetailsScreenProps) {
     const [course, setCourse] = useState<ICourse>();
     const { id } = route.params;
 
-    const handleBuy = async () => {
-        try {
-            const response = await api.post("/api/payments/send")
-            alert("Вам на почту придет письмо с url на оплату!")
-        } catch(error) {
-            console.error(error)
-        }
+    const handleBuy = async () => { 
+        api.post("/api/payments/send")
+        alert("Вам на почту придет письмо с url на оплату!")
     }
 
     useEffect(() => {
